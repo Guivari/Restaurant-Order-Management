@@ -1,5 +1,5 @@
-# Restaurant Order Management
-A "quick" implementation of a restaurant ordering system that I was supposed to implement in 90 minutes but took 4 hours instead.
+# management system
+A "quick" implementation of a system that I was supposed to implement in 90 minutes but took 3 hours instead.
 
 
 ## Data Structures
