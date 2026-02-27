@@ -9,6 +9,6 @@ type UserItem struct {
 }
 
 type OrderItem struct {
-	Item     string
+	ItemID   string
 	Quantity int
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"restaurant/model"
 	"restaurant/model/category"
@@ -50,39 +51,117 @@ func main() {
 
 	shop.ViewMenu()
 
-  order1 := shop.CreateOrder(
+  order1, err := shop.CreateOrder(
     "James Brown",
     []model.OrderItem{
-      {Item: "M8",Quantity: 4,},
-      {Item: "M1",Quantity: 2,},
-      {Item: "M4",Quantity: 3,},
-      {Item: "M3",Quantity: 1,},
-      {Item: "M7",Quantity: 2,},
+      {ItemID: "M8",Quantity: 4,},
+      {ItemID: "M1",Quantity: 2,},
+      {ItemID: "M4",Quantity: 3,},
+      {ItemID: "M3",Quantity: 1,},
+      {ItemID: "M7",Quantity: 2,},
     },
-  )
-
-  
-  order2 := shop.CreateOrder(
-    "John Smith",
+  )  
+  order2, err := shop.CreateOrder(
+    "Jeremiah Singh",
     []model.OrderItem{
-      {Item: "M3",Quantity: 2,},
-      {Item: "M8",Quantity: 2,},
-      {Item: "M6",Quantity: 1,},
+      {ItemID: "M8",Quantity: 4,},
+      {ItemID: "M1",Quantity: 2,},
+      {ItemID: "M4",Quantity: 3,},
+      {ItemID: "M3",Quantity: 1,},
+      {ItemID: "M7",Quantity: 2,},
     },
   )
+  order3, err := shop.CreateOrder(
+    "Jane Doe",
+    []model.OrderItem{
+      {ItemID: "M1",Quantity: 4,},
+      {ItemID: "M2",Quantity: 5,},
+      {ItemID: "M3",Quantity: 6,},
+    },
+  )
+  orderZ, err := shop.CreateOrder("Lorem Ipsum",[]model.OrderItem{
+    {ItemID: "M1", Quantity: 1},
+  })
+  if err != nil {log.Println(err)}
 
+  //No modification, cancelled
   err = shop.ViewOrder(order1)
-  if err != nil {
-    log.Fatal(err)
-  }
+  if err != nil {log.Println(err)}
+  err = shop.ModifyOrder(order1, []model.OrderItem{
+    {ItemID: "M4",Quantity: -1,},
+    {ItemID: "M3",Quantity: 2,},
+  })
+  if err != nil {log.Println(err)}
+  err = shop.CancelOrder(order1)
+  if err != nil {log.Println(err)}
 
+  //Good modification, good discount
   err = shop.ViewOrder(order2)
-  if err != nil {
-    log.Fatal(err)
-  }
-  
+  if err != nil {log.Println(err)}
+  err = shop.ModifyOrder(order2, []model.OrderItem{
+    {ItemID: "M4",Quantity: -1,},
+    {ItemID: "M3",Quantity: 2,},
+    {ItemID: "M6",Quantity: 5,},
+  })
+  if err != nil {log.Println(err)}
+  err = shop.ViewOrder(order2)
+  if err != nil {log.Println(err)}
   err = shop.CompleteOrder(order2,"WELCOME10")
-  if err != nil {
-    log.Fatal(err)
-  }
+  if err != nil {log.Println(err)}
+  
+  fmt.Println()
+
+  //bad orderID
+  err = shop.ModifyOrder("badID",[]model.OrderItem{})
+  if err != nil {log.Println(err)}
+  err = shop.ViewOrder("badID")
+  if err != nil {log.Println(err)}
+  err = shop.CompleteOrder("badID","")
+  if err != nil {log.Println(err)}
+  err = shop.CancelOrder("badID")
+  if err != nil {log.Println(err)}
+
+  fmt.Println()
+
+  //bad create, wrong itemid
+  _, err = shop.CreateOrder("Lorem Ipsum",[]model.OrderItem{
+    {ItemID: "M6969", Quantity: 0},
+  })
+  if err != nil {log.Println(err)}
+  //bad modification, wrong itemid
+  err = shop.ModifyOrder(orderZ, []model.OrderItem{
+    {ItemID: "M420", Quantity: 1},
+  })
+  if err != nil {log.Println(err)}
+
+  
+  fmt.Println()
+
+  //bad modification, invalid quantity
+  err = shop.ModifyOrder(order3, []model.OrderItem{
+    {ItemID: "M4",Quantity: -10,},
+  })
+  if err != nil {log.Println(err)}
+  
+  fmt.Println()
+  
+  //order expired (either completed or cancelled)
+  err = shop.ModifyOrder(order1, []model.OrderItem{})
+  if err != nil {log.Println(err)}
+  err = shop.ModifyOrder(order2, []model.OrderItem{})
+  if err != nil {log.Println(err)}
+  err = shop.CompleteOrder(order1,"BADCODE")
+  if err != nil {log.Println(err)}
+  err = shop.CompleteOrder(order2,"BADCODE")
+  if err != nil {log.Println(err)}
+
+  fmt.Println()
+  
+  //bad discount
+  err = shop.CompleteOrder(order3,"BADCODE")
+  if err != nil {log.Println(err)}
+
+
+
+
 }
