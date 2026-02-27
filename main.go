@@ -61,6 +61,7 @@ func main() {
       {ItemID: "M7",Quantity: 2,},
     },
   )  
+  if err != nil {log.Println(err)}
   order2, err := shop.CreateOrder(
     "Jeremiah Singh",
     []model.OrderItem{
@@ -71,6 +72,7 @@ func main() {
       {ItemID: "M7",Quantity: 2,},
     },
   )
+  if err != nil {log.Println(err)}
   order3, err := shop.CreateOrder(
     "Jane Doe",
     []model.OrderItem{
@@ -79,11 +81,14 @@ func main() {
       {ItemID: "M3",Quantity: 6,},
     },
   )
+  if err != nil {log.Println(err)}
   orderZ, err := shop.CreateOrder("Lorem Ipsum",[]model.OrderItem{
     {ItemID: "M1", Quantity: 1},
   })
   if err != nil {log.Println(err)}
 
+
+  
   //No modification, cancelled
   err = shop.ViewOrder(order1)
   if err != nil {log.Println(err)}
@@ -126,6 +131,11 @@ func main() {
   //bad create, wrong itemid
   _, err = shop.CreateOrder("Lorem Ipsum",[]model.OrderItem{
     {ItemID: "M6969", Quantity: 0},
+  })
+  if err != nil {log.Println(err)}
+  //bad create, bad quantity
+  _, err = shop.CreateOrder("Lorem Ipsum",[]model.OrderItem{
+    {ItemID: "M1", Quantity: -1},
   })
   if err != nil {log.Println(err)}
   //bad modification, wrong itemid

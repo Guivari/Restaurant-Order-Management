@@ -86,6 +86,9 @@ func (this *Shop) CreateOrder(name string, orders []model.OrderItem) (string, er
 		if !ok {
 			return "", fmt.Errorf("[createOrder] %s not found in menu", order.ItemID)
 		}
+		if order.Quantity < 0 {
+			return "", fmt.Errorf("[createOrder] invalid quantity %d for %s, cannot be less than 0", order.Quantity, order.ItemID)
+		}
 		newOrder.Items[order.ItemID] = order.Quantity
 	}
 
@@ -201,6 +204,7 @@ func (this *Shop) CompleteOrder(orderID string, discCode string) error {
 	fmt.Printf("Order completed. Thank you!\n")
 
 	order.Status = status.Complete
+	order.DiscountCode = discCode
 	this.Orders[orderID] = order
 
 	return nil
